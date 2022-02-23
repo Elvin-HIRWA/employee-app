@@ -309,6 +309,22 @@
                             }
                         }
                     },
+                    "404": {
+                        "description": "NotFound",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "description": "UnAuthorized",
                         "content": {
@@ -443,6 +459,22 @@
                             }
                         }
                     },
+                    "404": {
+                        "description": "NotFound",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "description": "UnAuthorized",
                         "content": {
@@ -508,6 +540,22 @@
                                         "msg": {
                                             "type": "string",
                                             "example": "Employee deletion success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "NotFound",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee Not Found"
                                         }
                                     },
                                     "type": "object"

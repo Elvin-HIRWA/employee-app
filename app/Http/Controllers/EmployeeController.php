@@ -3,11 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
 {
+
+    protected $employee;
+
+    public function __construct(Employee $employee){
+        $this->employee = $employee;
+    }
     /**
      * Display a listing of the resource.
      * @OA\Get(
@@ -149,6 +156,7 @@ class EmployeeController extends Controller
      *              @OA\Property(property="msg", type="string", example="fail"),
      *          )
      *      ),
+   
      *      @OA\Response(
      *    response=401,
      *    description="UnAuthorized",
@@ -210,6 +218,13 @@ class EmployeeController extends Controller
      *              @OA\Property(property="age", type="string", example="40"),
      *         )
      *     ),
+     *  @OA\Response(
+     *    response=404,
+     *    description="NotFound",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Employee Not Found"),
+     *    )
+     * ),
      *      @OA\Response(
      *    response=401,
      *    description="UnAuthorized",
@@ -229,10 +244,22 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        return Employee::find($id);
+    public function show($id){
+        $employee = $this->employee->getEmployee($id);
+        if($employee){
+            return response()->json($employee);
+        }
+        return response()->json(["msg"=>"this Employee not found"],404);
     }
+
+
+    // public function get($id){
+    //     $todo = $this->todo->getTodo($id);
+    //     if($todo){
+    //         return response()->json($todo);
+    //     }
+    //     return response()->json(["msg"=>"Todo item not found"],404);
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -316,6 +343,13 @@ class EmployeeController extends Controller
      *              @OA\Property(property="phone", type="string", example="0798888888"),
      *          )
      *      ),
+     *   @OA\Response(
+     *    response=404,
+     *    description="NotFound",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Employee Not Found"),
+     *    )
+     * ),
      *      @OA\Response(
      *    response=401,
      *    description="UnAuthorized",
@@ -336,13 +370,15 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        $employee = Employee::find($id);
-        $employee->update($request->all());
-        return $employee;
-    }
 
+    public function update($id, Request $request){
+        try {
+            $employee = $this->employee->updateEmployee($id,$request->all());
+            return response()->json($employee);
+        }catch (ModelNotFoundException $exception){
+            return response()->json(["msg"=>$exception->getMessage()],404);
+        }
+    }
     /**
      * Remove the specified resource from storage.
      * 
@@ -363,6 +399,13 @@ class EmployeeController extends Controller
      *             @OA\Property(property="msg", type="string", example="Employee deletion success")
      *         )
      *     ),
+     *  @OA\Response(
+     *    response=404,
+     *    description="NotFound",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Employee Not Found"),
+     *    )
+     * ),
      *      @OA\Response(
      *    response=401,
      *    description="UnAuthorized",
@@ -382,9 +425,13 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        return DB::delete("DELETE FROM employees WHERE id=?", [$id]);
+    public function destroy($id){
+        try {
+            $employee = $this->employee->deleteEmployee($id);
+            return response()->json(["msg"=>"Employee Deleted successfully"]);
+        }catch (ModelNotFoundException $exception){
+            return response()->json(["msg"=>$exception->getMessage()],404);
+        }
     }
 
      /**

@@ -22,11 +22,11 @@ Route::post('/register', [UsersController::class, 'register']);
 Route::post('/login', [UsersController::class, 'login']);
 Route::get('/employee/{id}',[EmployeeController::class, 'show']);
 
-Route::post('/employee',[EmployeeController::class, 'store']);
-// ->middleware("auth:sanctum");
+Route::post('/employee',[EmployeeController::class, 'store'])->middleware("auth:sanctum");
 Route::get('/employee/search/{name}',[EmployeeController::class, 'search']);
 Route::put('/employee/{id}',[EmployeeController::class, 'update']);
 Route::delete('/employee/{id}',[EmployeeController::class, 'destroy']);
+Route::post('/logout',[UsersController::class, 'logout'])->middleware("auth:sanctum");
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

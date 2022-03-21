@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserLogin;
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class EmployeeController extends Controller
 {
@@ -178,6 +181,7 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+        $getemail = $request->user()->email;
         $request->validate([
             'name' => 'required',
             'email' => 'required',
@@ -187,8 +191,11 @@ class EmployeeController extends Controller
             'identity_number' => 'required',
             'age' => 'required',
         ]);
+        
+        Mail::to($getemail)->send(new UserLogin());
 
         return Employee::Create($request->all());
+        // return $getemail;
     }
 
     /**
